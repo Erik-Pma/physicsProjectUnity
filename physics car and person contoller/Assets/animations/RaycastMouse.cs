@@ -9,7 +9,7 @@ public class RaycastMouse : MonoBehaviour
     public float forcePower = 100;
     RaycastHit hit;
     Vector3 lastpo;
-    [SerializeField]Light light;
+    
     public LayerMask mask;
     float height;
 
@@ -18,9 +18,9 @@ public class RaycastMouse : MonoBehaviour
     void Update()
     {
         if(Input.GetKeyDown(KeyCode.Mouse0))
-        RayHit();
+            RayHit();
         if (Input.GetKeyDown(KeyCode.Mouse1))
-        shoot2();
+            shoot2();
     }
     /// <summary>
     /// makes ray at the camera and tell you what it hits
