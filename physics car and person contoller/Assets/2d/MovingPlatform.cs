@@ -7,7 +7,7 @@ public class MovingPlatform : MonoBehaviour
     [Header("Up - Down")]
     [SerializeField] [Range(1, 10f)] float distance = 3f;
     [Header("side to side")]
-    [SerializeField] [Range(1, 10f)] float distanceSide = 3f;
+    //[SerializeField] [Range(1, 10f)] float distanceSide = 3f;
     float endy;
     float starty;
     float endx;

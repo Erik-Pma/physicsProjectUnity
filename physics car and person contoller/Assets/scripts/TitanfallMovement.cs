@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEditor;
+using TMPro;
 
 public class TitanfallMovement : MonoBehaviour
 {
@@ -18,19 +20,24 @@ public class TitanfallMovement : MonoBehaviour
     Vector3 forwardDirection;
 
     
+    [Header("Debug Menu")]
+    [ReadOnly]
+    public int jumpCharges;
+    [ReadOnly]
+    [SerializeField]bool isGrounded;
+    [ReadOnly]
+    [SerializeField] bool isSprinting;
+    [ReadOnly]
+    [SerializeField] bool isCrouching;
+    [ReadOnly]
+    [SerializeField] bool isSliding;
+    [ReadOnly]
+    [SerializeField] bool isWallRunning;
+    [ReadOnly]
+    [SerializeField] bool liftCrouch = true;
+    [ReadOnly]
+    [SerializeField]float speed;
 
-    int jumpCharges;
-    bool isGrounded;
-
-    bool isSprinting;
-
-    bool isCrouching;
-
-    bool isSliding;
-
-    bool isWallRunning;
-
-    float speed;
     [Header("speed values")]
     public float runSpeed;
 
@@ -48,8 +55,11 @@ public class TitanfallMovement : MonoBehaviour
 
     public float wallSpeedDecrease;
 
+    
 
     float gravity;
+
+    [SerializeField] TMP_Text speedText;
     [Header("game stats")]
     public float normalGravity;
 
@@ -95,6 +105,8 @@ public class TitanfallMovement : MonoBehaviour
     public float wallRunTilt;
 
     public float tilt;
+
+    
     // Start is called before the first frame update
     void Start()
     {
@@ -123,6 +135,7 @@ public class TitanfallMovement : MonoBehaviour
     /// </summary>
     void HandleInput() 
     {
+        if(!isSliding)
         input = new Vector3(Input.GetAxisRaw("Horizontal"), 0f, Input.GetAxisRaw("Vertical"));
 
         input = transform.TransformDirection(input);
@@ -136,10 +149,12 @@ public class TitanfallMovement : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.C)) //croches if you hit the c key
         {
             Crouch();
+            liftCrouch = false;
         }
         if (Input.GetKeyUp(KeyCode.C))//uncroches when you are done pressing the c key;
         {
             ExitCrouch();
+            liftCrouch = true;
         }
 
         if (Input.GetKeyDown(KeyCode.LeftShift) && isGrounded) //sprints when you hit the sprint key
@@ -178,40 +193,63 @@ public class TitanfallMovement : MonoBehaviour
     void Update()
     {
         HandleInput();
-        CheckWallRun();
+        CheckWallRun();//TODO: this is proably in the wrong spot
+        //makes a movement type based on state
         if (isGrounded && !isSliding)
         {
             GroundMovement();
+            isWallRunning = false;//HACK: this is just a hack fix to make sure you cant wal run on the ground
         }
         else if (!isGrounded && !isWallRunning)
         {
             AirMovment();
+            
         }
-        else if (isSliding)
+        if(isSliding)
         {
+            
             SlideMovement();
             DecreaseSpeed(slideSpeedDecrease);
             slideTimer -= 1f * Time.deltaTime;
             if (slideTimer < 0)
             {
+
+                
                 isSliding = false;
             }
         }
-        else if (isWallRunning) 
+        else if (isWallRunning && !isGrounded)
         {
             WallRunMovment();
             DecreaseSpeed(wallSpeedDecrease);
         }
-        checkGround();
-        controller.Move(move * Time.deltaTime);
-        
-        ApplyGravity();
-        CameraEffect();
-    }
+        if (isSprinting && isCrouching)
+        {
+            isSprinting = false;
+        }
 
+        
+
+
+        //checks to see if you are still on the ground in the game
+        checkGround();
+        // change camera based on the state
+        CameraEffect();
+        speedText.text ="speed: " + move.magnitude.ToString("n2");
+    }
+    private void FixedUpdate()
+    {
+        
+        controller.Move(move * Time.deltaTime);
+        //applys
+        ApplyGravity();
+    }
+    /// <summary>
+    /// the moment that is used on the ground crouch walking and runing state
+    /// </summary>
     void GroundMovement() 
     {
-        speed = isSprinting ? sprintSpeed : isCrouching ? crouchSpeed : runSpeed;
+        speed = isSprinting ? sprintSpeed : isCrouching ? crouchSpeed : runSpeed;// the speed that is used for the current ground state
         if (input.x != 0)
         {
             move.x += input.x * speed;
@@ -229,20 +267,28 @@ public class TitanfallMovement : MonoBehaviour
             move.z = 0f;
         }
 
-        move = Vector3.ClampMagnitude(move, speed);
-    }
+        move = Vector3.ClampMagnitude(move, speed);// clap the speed so you cant move fater moving sideways
+    }/// <summary>
+    /// the movement that is applyed in the air state
+    /// </summary>
     void AirMovment() 
     {
         move.x += input.x * airSpeed;
         move.z += input.z * airSpeed;
 
-        move = Vector3.ClampMagnitude(move, speed);
+        move = Vector3.ClampMagnitude(move, speed);// clap the speed so you cant move fater moving sideways
     }
+    /// <summary>
+    /// movment value apllyed whell in the slide state
+    /// </summary>
     void SlideMovement() 
     {
         move += forwardDirection;
-        move = Vector3.ClampMagnitude(move, speed);
+        move = Vector3.ClampMagnitude(move, speed);// clap the speed so you cant move fater moving sideways
     }
+    /// <summary>
+    /// the movement values that are used in a wall run
+    /// </summary>
     void WallRunMovment() 
     {
         if (input.z > (forwardDirection.z - 10f) && input.z < (forwardDirection.z + 10f))
@@ -257,18 +303,31 @@ public class TitanfallMovement : MonoBehaviour
         }
         move.x += input.x * airSpeed;
 
-        move = Vector3.ClampMagnitude (move, speed);
+        move = Vector3.ClampMagnitude (move, speed);// clap the speed so you cant move fater moving sideways
     }
+    /// <summary>
+    /// ground check based on sphere cast
+    /// </summary>
     void checkGround() 
     {
-        isGrounded = Physics.CheckSphere(groundCheck.position, 0.2f, groundMask);
+        if (!isCrouching)
+        {
+            isGrounded = Physics.CheckSphere(groundCheck.position, 0.2f, groundMask);
+        }
+        else
+        {
+            groundCheck.position = new Vector3(groundCheck.position.x,groundCheck.position.y + .7f,groundCheck.position.z);
+            isGrounded = Physics.CheckSphere(groundCheck.position, 0.2f, groundMask);
+        }
         if (isGrounded) 
         {
             jumpCharges = 1;
             hasWallRun = false;
         }
     }
-
+    /// <summary>
+    /// checks to see if you are wall running
+    /// </summary>
     void CheckWallRun() 
     {
         onLeftWall = Physics.Raycast(transform.position, -transform.right, out leftWallHit, 0.7f, wallMask);
@@ -283,6 +342,9 @@ public class TitanfallMovement : MonoBehaviour
             ExitWallRun();
         }
     }
+    /// <summary>
+    /// some constraints to wall running
+    /// </summary>
     void TestWallRun() 
     {
         wallNormal = onLeftWall ? leftWallHit.normal : rightWallHit.normal;
@@ -301,7 +363,9 @@ public class TitanfallMovement : MonoBehaviour
             lastWallNormal = wallNormal;
         }
     }
-
+    /// <summary>
+    /// the gravity type to use based on game state
+    /// </summary>
     void ApplyGravity() 
     {
         gravity = isWallRunning ? wallRunGravity :normalGravity;
@@ -319,8 +383,8 @@ public class TitanfallMovement : MonoBehaviour
             jumpCharges--;
         else if (isWallRunning) 
         {
-            ExitWallRun();
-            IncreaseSpeed(wallSpeedIncrease);
+            ExitWallRun();//jump out of a wall run to set the camera back to normal
+            IncreaseSpeed(wallSpeedIncrease);// give you speed when leaving the wall run to make air movement feel better
         }
         Yvelocity.y = Mathf.Sqrt(jumpHeight * -2f * normalGravity);
     }
@@ -331,17 +395,19 @@ public class TitanfallMovement : MonoBehaviour
     {
         controller.height = crouchHeight;
         controller.center = crouchingCenter;
-        transform.localScale = new Vector3(transform.localScale.x, crouchHeight, transform.localScale.z);
+        transform.localScale = new Vector3(transform.localScale.x, crouchHeight, transform.localScale.z);//makes your character smaller
         isCrouching = true;
-        if (speed > runSpeed) 
+        if (speed > runSpeed) //if you crouch at speed lets you slide to help maintain speed
         {
             isSliding = true;
             forwardDirection = transform.forward;
             if (isGrounded) 
             {
-                IncreaseSpeed(slideSpeedIncrease);
+                IncreaseSpeed(slideSpeedIncrease);//add a speed to the inital slide  to help you move at the start
             }
-            slideTimer = maxSlideTimer;
+            if (slideTimer < 0) 
+            slideTimer = maxSlideTimer;//sets the slide length be for you become crouched
+            
         }
     }
     /// <summary>
@@ -354,12 +420,14 @@ public class TitanfallMovement : MonoBehaviour
         transform.localScale = new Vector3(transform.localScale.x, startHeight, transform.localScale.z);
         isCrouching = false;
         isSliding = false;
-    }
+    }/// <summary>
+    /// starts your wall run
+    /// </summary>
     void WallRun() 
     {
         isWallRunning = true;
-        jumpCharges = 1;
-        IncreaseSpeed(wallSpeedIncrease);
+        jumpCharges = 1;// gives you ajump charge back
+        IncreaseSpeed(wallSpeedIncrease);//adds an intial speed to make plares want to wall run
         Yvelocity = new Vector3 (0, 0, 0);
 
         
@@ -370,9 +438,16 @@ public class TitanfallMovement : MonoBehaviour
             forwardDirection = -forwardDirection;
         }
     }
-
+    /// <summary>
+    /// stops you from wall running
+    /// </summary>
     void ExitWallRun() 
     {
         isWallRunning = false;
+    }
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawSphere(groundCheck.position, 0.2f);
     }
 }
