@@ -373,7 +373,7 @@ public class TitanfallMovement : MonoBehaviour
         else if (isWallRunning) 
         {
             ExitWallRun();//jump out of a wall run to set the camera back to normal
-            //IncreaseSpeed(wallSpeedIncrease);// give you speed when leaving the wall run to make air movement feel better
+            IncreaseSpeed(wallSpeedIncrease);// give you speed when leaving the wall run to make air movement feel better
         }
         Yvelocity.y = Mathf.Sqrt(jumpHeight * -2f * normalGravity);
     }
