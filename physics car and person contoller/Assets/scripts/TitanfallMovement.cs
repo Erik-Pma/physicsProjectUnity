@@ -34,8 +34,6 @@ public class TitanfallMovement : MonoBehaviour
     [ReadOnly]
     [SerializeField] bool isWallRunning;
     [ReadOnly]
-    [SerializeField] bool liftCrouch = true;
-    [ReadOnly]
     [SerializeField]float speed;
 
     [Header("speed values")]
@@ -149,12 +147,12 @@ public class TitanfallMovement : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.C)) //croches if you hit the c key
         {
             Crouch();
-            liftCrouch = false;
+            
         }
         if (Input.GetKeyUp(KeyCode.C))//uncroches when you are done pressing the c key;
         {
             ExitCrouch();
-            liftCrouch = true;
+            
         }
 
         if (Input.GetKeyDown(KeyCode.LeftShift) && isGrounded) //sprints when you hit the sprint key
@@ -165,7 +163,8 @@ public class TitanfallMovement : MonoBehaviour
         {
             isSprinting = false;
         }
-    }/// <summary>
+    }
+    /// <summary>
     /// aplly effect to the camera when you are wall runing or sliding 
     /// </summary>
     void CameraEffect() 
@@ -203,7 +202,6 @@ public class TitanfallMovement : MonoBehaviour
         else if (!isGrounded && !isWallRunning)
         {
             AirMovment();
-            
         }
         if(isSliding)
         {
@@ -227,9 +225,6 @@ public class TitanfallMovement : MonoBehaviour
         {
             isSprinting = false;
         }
-
-        
-
 
         //checks to see if you are still on the ground in the game
         checkGround();
@@ -310,15 +305,9 @@ public class TitanfallMovement : MonoBehaviour
     /// </summary>
     void checkGround() 
     {
-        if (!isCrouching)
-        {
-            isGrounded = Physics.CheckSphere(groundCheck.position, 0.2f, groundMask);
-        }
-        else
-        {
-            groundCheck.position = new Vector3(groundCheck.position.x,groundCheck.position.y + .7f,groundCheck.position.z);
-            isGrounded = Physics.CheckSphere(groundCheck.position, 0.2f, groundMask);
-        }
+        if(!isCrouching)
+        isGrounded = Physics.CheckSphere(groundCheck.position, 0.2f, groundMask);
+
         if (isGrounded) 
         {
             jumpCharges = 1;
@@ -384,7 +373,7 @@ public class TitanfallMovement : MonoBehaviour
         else if (isWallRunning) 
         {
             ExitWallRun();//jump out of a wall run to set the camera back to normal
-            IncreaseSpeed(wallSpeedIncrease);// give you speed when leaving the wall run to make air movement feel better
+            //IncreaseSpeed(wallSpeedIncrease);// give you speed when leaving the wall run to make air movement feel better
         }
         Yvelocity.y = Mathf.Sqrt(jumpHeight * -2f * normalGravity);
     }
@@ -443,11 +432,15 @@ public class TitanfallMovement : MonoBehaviour
     /// </summary>
     void ExitWallRun() 
     {
+        
         isWallRunning = false;
     }
     private void OnDrawGizmos()
     {
+        
         Gizmos.color = Color.yellow;
         Gizmos.DrawSphere(groundCheck.position, 0.2f);
+        Gizmos.color = Color.cyan;
+        Gizmos.DrawSphere(transform.position, 0.7f);
     }
 }
