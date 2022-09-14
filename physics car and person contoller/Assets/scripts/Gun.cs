@@ -4,38 +4,42 @@ using UnityEngine;
 
 public class Gun : MonoBehaviour
 {
-    public RagdollController controller;
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    public float damage = 10f;
+    public float range = 100f;
+    public float ImpachtForce = 30f;
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-    public void RayHit()
-    {
-        RaycastHit hit;
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+    public Camera fpsCam;
 
-        if (Physics.Raycast(ray, out hit))
+    public ParticleSystem muzzleFlash;
+    public GameObject bulletDecal;
+    private void Update()
+    {
+        if (Input.GetButtonDown("Fire1")) 
         {
-            Transform objectHit = hit.transform;
-
-            print(objectHit.name);
-
-            if (objectHit.name.Equals("mixamorig:Head") || objectHit.name.Equals("mixamorig:Neck"))
-            {
-                controller.health -= controller.health;
-            }
-            if (objectHit.name.Equals("mixamorig:Spine1") || objectHit.name.Equals("mixamorig:Spine2") || objectHit.name.Equals("mixamorig:Hips"))
-            {
-                controller.health -= 3;
-            }
+            Shoot();
         }
+    }
 
+    void Shoot() 
+    {
+        muzzleFlash.Play();
+        RaycastHit hit;
+        if(Physics.Raycast(fpsCam.transform.position, fpsCam.transform.forward,out hit, range))
+        {
+            print(hit.transform.name);
+
+            Target target = hit.transform.GetComponent<Target>();
+            if (target != null) 
+            {
+                target.TakeDamage(damage);
+            }
+            if (hit.rigidbody != null) 
+            {
+                hit.rigidbody.AddForce(hit.normal * ImpachtForce);
+            }
+
+            GameObject ImpactGO = Instantiate(bulletDecal, hit.point, Quaternion.LookRotation(hit.normal));
+            Destroy(ImpactGO,2f);
+        }
     }
 }
