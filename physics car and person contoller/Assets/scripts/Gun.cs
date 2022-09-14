@@ -24,9 +24,10 @@ public class Gun : MonoBehaviour
     {
         muzzleFlash.Play();
         RaycastHit hit;
+        hit  = DetectHit();
         if(Physics.Raycast(fpsCam.transform.position, fpsCam.transform.forward,out hit, range))
         {
-            print(hit.transform.name);
+            
 
             Target target = hit.transform.GetComponent<Target>();
             if (target != null) 
@@ -41,5 +42,16 @@ public class Gun : MonoBehaviour
             GameObject ImpactGO = Instantiate(bulletDecal, hit.point, Quaternion.LookRotation(hit.normal));
             Destroy(ImpactGO,2f);
         }
+    }
+
+    RaycastHit DetectHit() 
+    {
+        RaycastHit hit;
+        if (Physics.Raycast(fpsCam.transform.position, fpsCam.transform.forward, out hit, range))
+        {
+            print(hit.transform.name);
+            
+        }
+        return hit;
     }
 }
