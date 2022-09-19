@@ -13,12 +13,13 @@ public class TitanfallMovement : MonoBehaviour
     public LayerMask groundMask;
 
     public LayerMask wallMask;
-
-    Vector3 move;
+    [ReadOnly]
+    public Vector3 move;
     Vector3 input;
     Vector3 Yvelocity;
     Vector3 forwardDirection;
 
+    static TitanfallMovement instance;
     
     [Header("Debug Menu")]
     [ReadOnly]

@@ -8,6 +8,8 @@ public class RagdollController : MonoBehaviour
     Rigidbody[] limbs;
     public Animator animator;
     public int health = 10;
+    [ReadOnly]
+    public bool isRagdoll = false;
     // Start is called before the first frame update
     void Start()
     {
@@ -21,13 +23,15 @@ public class RagdollController : MonoBehaviour
     [ContextMenu("ragdoll")]
     private void Update()
     {
-        if (health < 1) 
+        if (health < 1 && !isRagdoll) 
         {
             BeRagdoll();
+            
         }
     }
     public void BeRagdoll() 
     {
+        isRagdoll = true;
         animator.enabled = false;
         for (int x = 0; x < limbs.Length; x++)
         {
