@@ -14,9 +14,11 @@ public class Target : MonoBehaviour
             Die();
         }
     }
-
+    /// <summary>
+    /// kills the target when called
+    /// </summary>
     void Die() 
     {
-        Destroy(gameObject);
+        Destroy(gameObject); //detroys the target
     }
 }

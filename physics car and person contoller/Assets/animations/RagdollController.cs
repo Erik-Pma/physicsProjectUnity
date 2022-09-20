@@ -23,12 +23,16 @@ public class RagdollController : MonoBehaviour
     [ContextMenu("ragdoll")]
     private void Update()
     {
+        
         if (health < 1 && !isRagdoll) 
         {
             BeRagdoll();
             
         }
     }
+    /// <summary>
+    /// makes the charter ragdoll on the 
+    /// </summary>
     public void BeRagdoll() 
     {
         isRagdoll = true;
@@ -38,4 +42,5 @@ public class RagdollController : MonoBehaviour
             limbs[x].isKinematic = false;
         }
     }
+   
 }

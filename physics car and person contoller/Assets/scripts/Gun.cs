@@ -19,7 +19,9 @@ public class Gun : MonoBehaviour
             Shoot();
         }
     }
-
+    /// <summary>
+    /// shoots a bullet out of a gun
+    /// </summary>
     void Shoot() 
     {
         muzzleFlash.Play();
@@ -43,7 +45,10 @@ public class Gun : MonoBehaviour
             Destroy(ImpactGO,2f);
         }
     }
-
+    /// <summary>
+    /// detects a hit with the gun
+    /// </summary>
+    /// <returns> return the hit of the gun</returns>
     RaycastHit DetectHit() 
     {
         RaycastHit hit;
