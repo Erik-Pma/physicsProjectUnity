@@ -23,9 +23,11 @@ public class EnemyMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        //timer that moves the character
         timer -= Time.deltaTime;
         if(timer <= 0.0f) 
         {
+            // the distance the animator travels
             float distance = (playerTransform.position - agent.destination).sqrMagnitude;
             if (distance > maxDistance*maxDistance)
             {
@@ -33,7 +35,7 @@ public class EnemyMovement : MonoBehaviour
             }
             timer = maxTime;
         }
-        
+        //set the speed of the character
         animator.SetFloat("speed", agent.velocity.magnitude);
     }
 }

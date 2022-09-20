@@ -51,17 +51,17 @@ public class Grenade : MonoBehaviour
         foreach (Collider nearbyObject in colliders) 
         {
             Debug.Log(nearbyObject);
-
+            //ray cast to see if the object is able to be ray casted to in the sphere
             if (Physics.Raycast(transform.position,(nearbyObject.transform.position - transform.position).normalized,out hit,radius,enemy)) 
             {
-                Debug.Log("hit me batman, HIT ME");
+                //the ragdoll controller so you can get al the conponents an make them move witha grenade
                 RagdollController rc;
                 rc = hit.transform.GetComponentInParent<RagdollController>();
 
-                rc.BeRagdoll();
+                rc.BeRagdoll();//get a controller for the ragdoll to get all the components 
                 rc.health =0;//kills the player
 
-                Rigidbody[] limbs = rc.GetComponentsInChildren<Rigidbody>();
+                Rigidbody[] limbs = rc.GetComponentsInChildren<Rigidbody>();//a array of all the limbs
                 for (int i = 0; i < limbs.Length; i++)
                 {
                     limbs[i].AddExplosionForce(800f, transform.position, radius * 2);//adds force to all the limbs
