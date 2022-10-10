@@ -10,28 +10,33 @@ public class Gun : MonoBehaviour
 
     public Camera fpsCam;
 
-    public ParticleSystem muzzleFlash;
+    //public ParticleSystem muzzleFlash;
     public GameObject bulletDecal;
+
+    public GameObject grenades;
+
+    public Transform spot;
     private void Update()
     {
         if (Input.GetButtonDown("Fire1")) 
         {
             Shoot();
         }
+        
     }
     /// <summary>
     /// shoots a bullet out of a gun
     /// </summary>
     void Shoot() 
     {
-        muzzleFlash.Play();
+        //muzzleFlash.Play();
         RaycastHit hit;
         hit  = DetectHit();
         if(Physics.Raycast(fpsCam.transform.position, fpsCam.transform.forward,out hit, range))
         {
             
 
-            Target target = hit.transform.GetComponent<Target>();
+            Target target = hit.transform.GetComponentInParent<Target>();
             if (target != null) 
             {
                 target.TakeDamage(damage);
@@ -58,5 +63,11 @@ public class Gun : MonoBehaviour
             
         }
         return hit;
+    }
+
+    public void Grenade()
+    {
+        Instantiate(grenades, spot.position, spot.rotation);
+
     }
 }

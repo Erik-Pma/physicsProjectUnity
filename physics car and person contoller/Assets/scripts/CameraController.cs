@@ -28,6 +28,11 @@ public class CameraController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (transform.position.y < -7)
+        {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+        }
         //get the camera and make it move to the mouse
         rotY += Input.GetAxis("Mouse X") * sensitivity;
         rotX += Input.GetAxis("Mouse Y") * sensitivity;

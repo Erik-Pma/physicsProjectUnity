@@ -37,6 +37,7 @@ public class TitanfallMovement : MonoBehaviour
     [ReadOnly]
     [SerializeField]float speed;
 
+
     [Header("speed values")]
     public float runSpeed;
 
@@ -60,6 +61,8 @@ public class TitanfallMovement : MonoBehaviour
 
     [SerializeField] TMP_Text speedText;
     [Header("game stats")]
+    public GameObject panel;
+
     public float normalGravity;
 
     public float wallRunGravity;
@@ -192,6 +195,10 @@ public class TitanfallMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (transform.position.y < -7)
+        {
+            panel.SetActive(true);
+        }
         HandleInput();
         CheckWallRun();//TODO: this is proably in the wrong spot
         //makes a movement type based on state

@@ -6,6 +6,11 @@ public class Target : MonoBehaviour
 {
     public float health = 50f;
 
+    RagdollController rc;
+    private void Start()
+    {
+        rc = GetComponent<RagdollController>();
+    }
     public void TakeDamage(float amount) 
     {
         health -= amount;
@@ -19,6 +24,6 @@ public class Target : MonoBehaviour
     /// </summary>
     void Die() 
     {
-        Destroy(gameObject); //detroys the target
+        rc.BeRagdoll();
     }
 }
