@@ -195,6 +195,8 @@ public class TitanfallMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        
+
         if (transform.position.y < -7)
         {
             panel.SetActive(true);
@@ -450,5 +452,16 @@ public class TitanfallMovement : MonoBehaviour
         Gizmos.DrawSphere(groundCheck.position, 0.2f);
         Gizmos.color = Color.cyan;
         Gizmos.DrawSphere(transform.position, 0.7f);
+    }
+    void OnControllerColliderHit(ControllerColliderHit hit)
+    {
+        if (hit.collider.tag == "floor")
+        {
+            transform.parent = hit.transform;
+        }
+        else
+        {
+            transform.parent = null;
+        }
     }
 }

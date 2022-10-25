@@ -10,11 +10,22 @@ public class MovePlatform : MonoBehaviour
     int currentWaypointIndex = 0;
 
     [SerializeField] float speed = 1f;
-    
+    Rigidbody rb;
+    private void Start()
+    {
+        rb = GetComponent<Rigidbody>();
+    }
 
     // Update is called once per frame
     void Update()
     {
+        if (GetComponentInChildren<TitanfallMovement>()) 
+        {
+            CharacterController cc = GetComponentInChildren<CharacterController>();
+            cc.Move(rb.velocity * Time.deltaTime);
+
+        }
+        
         if (Vector3.Distance(transform.position, waypoints[currentWaypointIndex].transform.position) < 0.1f) 
         {
             currentWaypointIndex++;
@@ -24,6 +35,8 @@ public class MovePlatform : MonoBehaviour
             }
         }
 
+
         transform.position = Vector3.MoveTowards(transform.position, waypoints[currentWaypointIndex].transform.position, speed * Time.deltaTime);
+        
     }
 }
