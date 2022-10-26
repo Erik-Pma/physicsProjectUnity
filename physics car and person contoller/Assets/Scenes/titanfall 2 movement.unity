@@ -383,7 +383,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 188857987}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -216.1, y: 0, z: -34.1}
+  m_LocalPosition: {x: 6.95, y: 0, z: 10.2}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1711537682}
@@ -423,17 +423,20 @@ MonoBehaviour:
   runSpeed: 8
   sprintSpeed: 12
   crouchSpeed: 4
-  airSpeed: 0.3
+  airSpeed: 0
+  climbSpeed: 5
   slideSpeedIncrease: 2.5
   slideSpeedDecrease: 3
-  wallSpeedIncrease: 5
-  wallSpeedDecrease: 1.5
-  speedText: {fileID: 955759869}
-  panel: {fileID: 444301832}
+  wallSpeedIncrease: 0
+  wallSpeedDecrease: 0
+  speedText: {fileID: 0}
+  panel: {fileID: 0}
   normalGravity: -13
   wallRunGravity: -0.2
   jumpHeight: 5
   maxSlideTimer: 2
+  maxClimbTimer: 1
+  maxWallJumpTimer: 0.1
   playerCamera: {fileID: 2083542736}
   specialFov: 120
   cameraChangeTime: 20
