@@ -47,6 +47,8 @@ public class TitanfallMovement : MonoBehaviour
 
     public float airSpeed;
 
+    public float climbSpeed;
+
     public float slideSpeedIncrease;
 
     public float slideSpeedDecrease;
@@ -95,6 +97,23 @@ public class TitanfallMovement : MonoBehaviour
 
     Vector3 lastWallNormal;
 
+    bool isClimbing;
+
+    bool canClimb;
+
+    bool hasClimbed;
+
+    RaycastHit wallHit;
+
+    float climbTimber;
+
+    public float maxClimbTimer;
+
+    bool isWallJumping;
+
+    float wallJumpTimer;
+
+    public float maxWallJumpTimer;
 
     public Camera playerCamera;
 
@@ -202,14 +221,16 @@ public class TitanfallMovement : MonoBehaviour
             panel.SetActive(true);
         }
         HandleInput();
-        CheckWallRun();//TODO: this is proably in the wrong spot
+        CheckWallRun();
+        CheckClimbing();
+        //TODO: this is proably in the wrong spot
         //makes a movement type based on state
         if (isGrounded && !isSliding)
         {
             GroundMovement();
             isWallRunning = false;//HACK: this is just a hack fix to make sure you cant wal run on the ground
         }
-        else if (!isGrounded && !isWallRunning)
+        else if (!isGrounded && !isWallRunning && !isClimbing)
         {
             AirMovment();
         }
@@ -230,6 +251,18 @@ public class TitanfallMovement : MonoBehaviour
         {
             WallRunMovment();
             DecreaseSpeed(wallSpeedDecrease);
+        }
+        else if (isClimbing) 
+        {
+            ClimbMovment();
+            climbTimber -= 1f * Time.deltaTime;
+            if(climbTimber < 0) 
+            {
+                isClimbing = false;
+                hasClimbed = true;
+            }
+
+
         }
         if (isSprinting && isCrouching)
         {
@@ -280,6 +313,15 @@ public class TitanfallMovement : MonoBehaviour
     {
         move.x += input.x * airSpeed;
         move.z += input.z * airSpeed;
+        if (isWallJumping) 
+        {
+            move += forwardDirection;
+            wallJumpTimer -= 1f * Time.deltaTime;
+            if (wallJumpTimer <= 0) 
+            {
+                isWallJumping = false;
+            }
+        }
 
         move = Vector3.ClampMagnitude(move, speed);// clap the speed so you cant move fater moving sideways
     }
@@ -310,6 +352,20 @@ public class TitanfallMovement : MonoBehaviour
 
         move = Vector3.ClampMagnitude (move, speed);// clap the speed so you cant move fater moving sideways
     }
+    void ClimbMovment() 
+    {
+        forwardDirection = Vector3.up;
+        move.x += input.x * airSpeed;
+        move.z += input.z * airSpeed;
+
+        Yvelocity += forwardDirection;
+        speed = climbSpeed;
+
+        move = Vector3.ClampMagnitude(move, speed);
+        Yvelocity = Vector3.ClampMagnitude(Yvelocity, speed);
+
+    }
+
     /// <summary>
     /// ground check based on sphere cast
     /// </summary>
@@ -322,7 +378,10 @@ public class TitanfallMovement : MonoBehaviour
         {
             jumpCharges = 1;
             hasWallRun = false;
+            hasClimbed = false;
+            climbTimber = maxClimbTimer;
         }
+        
     }
     /// <summary>
     /// checks to see if you are wall running
@@ -341,6 +400,20 @@ public class TitanfallMovement : MonoBehaviour
             ExitWallRun();
         }
     }
+    void CheckClimbing() 
+    {
+        canClimb = Physics.Raycast(transform.position, transform.forward, out wallHit, 0.7f, wallMask);
+        float wallAngle = Vector3.Angle(-wallHit.normal, transform.forward);
+        if (wallAngle < 15 && !hasClimbed && canClimb)
+        {
+            isClimbing = true;
+        }
+        else 
+        {
+            isClimbing= false;
+        }
+    }
+
     /// <summary>
     /// some constraints to wall running
     /// </summary>
@@ -367,7 +440,7 @@ public class TitanfallMovement : MonoBehaviour
     /// </summary>
     void ApplyGravity() 
     {
-        gravity = isWallRunning ? wallRunGravity :normalGravity;
+        gravity = isWallRunning ? wallRunGravity: isClimbing ? 0f :normalGravity;
         
         Yvelocity.y += gravity * Time.deltaTime;
         controller.Move(Yvelocity * Time.deltaTime);
@@ -385,6 +458,8 @@ public class TitanfallMovement : MonoBehaviour
             ExitWallRun();//jump out of a wall run to set the camera back to normal
             IncreaseSpeed(wallSpeedIncrease);// give you speed when leaving the wall run to make air movement feel better
         }
+        hasClimbed = false;
+        climbTimber = maxClimbTimer;
         Yvelocity.y = Mathf.Sqrt(jumpHeight * -2f * normalGravity);
     }
     /// <summary>
@@ -444,6 +519,10 @@ public class TitanfallMovement : MonoBehaviour
     {
         
         isWallRunning = false;
+        lastWallNormal = wallNormal;
+        forwardDirection = wallNormal;
+        isWallJumping = true;
+        wallJumpTimer = maxWallJumpTimer;
     }
     private void OnDrawGizmos()
     {
