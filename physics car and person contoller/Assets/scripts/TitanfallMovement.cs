@@ -35,7 +35,12 @@ public class TitanfallMovement : MonoBehaviour
     [ReadOnly]
     [SerializeField] bool isWallRunning;
     [ReadOnly]
+    [SerializeField] bool isClimbing;
+    [ReadOnly]
     [SerializeField]float speed;
+    [ReadOnly]
+    [SerializeField] bool isWallJumping;
+
 
 
     [Header("speed values")]
@@ -97,7 +102,7 @@ public class TitanfallMovement : MonoBehaviour
 
     Vector3 lastWallNormal;
 
-    bool isClimbing;
+    
 
     bool canClimb;
 
@@ -109,7 +114,7 @@ public class TitanfallMovement : MonoBehaviour
 
     public float maxClimbTimer;
 
-    bool isWallJumping;
+   
 
     float wallJumpTimer;
 
@@ -133,6 +138,7 @@ public class TitanfallMovement : MonoBehaviour
     {
         controller = GetComponent<CharacterController>();
         startHeight = transform.localScale.y;
+        jumpCharges = 2;
         normalFov = playerCamera.fieldOfView;
     }
     /// <summary>
@@ -200,6 +206,7 @@ public class TitanfallMovement : MonoBehaviour
             if (onRightWall) 
             {
                 tilt = Mathf.Lerp(tilt,wallRunTilt,cameraChangeTime * Time.deltaTime);
+                
             }
             if (onLeftWall) 
             {
@@ -352,8 +359,12 @@ public class TitanfallMovement : MonoBehaviour
 
         move = Vector3.ClampMagnitude (move, speed);// clap the speed so you cant move fater moving sideways
     }
+    /// <summary>
+    /// supposed to make you climb but doesnt trigger
+    /// </summary>
     void ClimbMovment() 
     {
+        Debug.Log("im climbing");
         forwardDirection = Vector3.up;
         move.x += input.x * airSpeed;
         move.z += input.z * airSpeed;
@@ -395,13 +406,17 @@ public class TitanfallMovement : MonoBehaviour
         {
             TestWallRun();
         }
-        if ((!onRightWall && !onLeftWall) && !isWallRunning) 
+        if ((!onRightWall && !onLeftWall) && isWallRunning) 
         {
             ExitWallRun();
         }
     }
+    /// <summary>
+    /// doesnt get called
+    /// </summary>
     void CheckClimbing() 
     {
+        print("im climbing cope");
         canClimb = Physics.Raycast(transform.position, transform.forward, out wallHit, 0.7f, wallMask);
         float wallAngle = Vector3.Angle(-wallHit.normal, transform.forward);
         if (wallAngle < 15 && !hasClimbed && canClimb)
@@ -410,7 +425,7 @@ public class TitanfallMovement : MonoBehaviour
         }
         else 
         {
-            isClimbing= false;
+            isClimbing = false;
         }
     }
 
@@ -520,9 +535,12 @@ public class TitanfallMovement : MonoBehaviour
         
         isWallRunning = false;
         lastWallNormal = wallNormal;
+        
+        
         forwardDirection = wallNormal;
         isWallJumping = true;
         wallJumpTimer = maxWallJumpTimer;
+        
     }
     private void OnDrawGizmos()
     {
