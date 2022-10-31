@@ -464,7 +464,9 @@ public class TitanfallMovement : MonoBehaviour
         gravity = isWallRunning ? wallRunGravity: isClimbing ? 0f :normalGravity;
         
         Yvelocity.y += gravity * Time.deltaTime;
+        
         controller.Move(Yvelocity * Time.deltaTime);
+        
     }
     /// <summary>
     /// makes th player jump and add speed to the vector
@@ -567,4 +569,5 @@ public class TitanfallMovement : MonoBehaviour
             transform.parent = null;
         }
     }
+    
 }
