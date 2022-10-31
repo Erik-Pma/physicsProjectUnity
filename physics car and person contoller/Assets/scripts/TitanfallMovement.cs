@@ -40,7 +40,10 @@ public class TitanfallMovement : MonoBehaviour
     [SerializeField]float speed;
     [ReadOnly]
     [SerializeField] bool isWallJumping;
-
+    [ReadOnly]
+    [SerializeField]bool canClimb;
+    [ReadOnly]
+    [SerializeField]bool hasClimbed;
 
 
     [Header("speed values")]
@@ -104,9 +107,7 @@ public class TitanfallMovement : MonoBehaviour
 
     
 
-    bool canClimb;
-
-    bool hasClimbed;
+    
 
     RaycastHit wallHit;
 
@@ -265,6 +266,8 @@ public class TitanfallMovement : MonoBehaviour
             climbTimber -= 1f * Time.deltaTime;
             if(climbTimber < 0) 
             {
+                
+
                 isClimbing = false;
                 hasClimbed = true;
             }
@@ -416,17 +419,20 @@ public class TitanfallMovement : MonoBehaviour
     /// </summary>
     void CheckClimbing() 
     {
-        print("im climbing cope");
+        
         canClimb = Physics.Raycast(transform.position, transform.forward, out wallHit, 0.7f, wallMask);
         float wallAngle = Vector3.Angle(-wallHit.normal, transform.forward);
         if (wallAngle < 15 && !hasClimbed && canClimb)
         {
             isClimbing = true;
         }
-        else 
+        else if (wallAngle < 15 && !canClimb && isClimbing) 
         {
-            isClimbing = false;
+            float mantalHieght = transform.position.y + 10;
+            transform.position = new Vector3(transform.position.x+ speed,mantalHieght,transform.position.z);
+            isClimbing=false;
         }
+        
     }
 
     /// <summary>
