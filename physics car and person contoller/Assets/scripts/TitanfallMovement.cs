@@ -200,6 +200,10 @@ public class TitanfallMovement : MonoBehaviour
     void CameraEffect() 
     {
         float fov = isWallRunning ? specialFov : isSliding ? specialFov : normalFov;
+        if (isSprinting && !isSliding) 
+        {
+            fov *= 1.2f;
+        }
         playerCamera.fieldOfView = Mathf.Lerp(playerCamera.fieldOfView, fov, cameraChangeTime *Time.deltaTime);//sets the player fov to be wider when sliding
 
         if (isWallRunning) // set cammer tilt when on the wall depending on direction
@@ -464,7 +468,10 @@ public class TitanfallMovement : MonoBehaviour
         gravity = isWallRunning ? wallRunGravity: isClimbing ? 0f :normalGravity;
         
         Yvelocity.y += gravity * Time.deltaTime;
-        
+        if (groundCheck) 
+        {
+            Yvelocity.y = Mathf.Clamp(Yvelocity.y, normalGravity, -normalGravity); //clamps the gravity so you dont turbo get pulled downand have a time to jump 
+        }
         controller.Move(Yvelocity * Time.deltaTime);
         
     }
