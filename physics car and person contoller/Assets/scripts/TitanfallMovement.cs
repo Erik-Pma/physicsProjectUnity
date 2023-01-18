@@ -463,7 +463,7 @@ public class TitanfallMovement : MonoBehaviour
     /// </summary>
     private void checkVehicl()
     {
-
+        nextToVehicl = Physics.Raycast(transform.position, transform.forward, out vehiclInRange, 0.7f, wallMask);
     }
 
     /// <summary>
