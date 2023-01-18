@@ -3,9 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 using TMPro;
+using System;
 
 public class TitanfallMovement : MonoBehaviour
 {
+    /// <summary>
+    /// the charater controller that this is based off of
+    /// </summary>
     CharacterController controller;
     [Header("ground check")]
     public Transform groundCheck;
@@ -96,7 +100,11 @@ public class TitanfallMovement : MonoBehaviour
     bool onLeftWall;
 
     bool onRightWall;
-    
+
+    bool nextToVehicl;
+
+    RaycastHit vehiclInRange;
+
     RaycastHit leftWallHit;
 
     RaycastHit rightWallHit;
@@ -193,6 +201,10 @@ public class TitanfallMovement : MonoBehaviour
         {
             isSprinting = false;
         }
+        if (Input.GetKeyDown(KeyCode.E)) 
+        {
+            EnterVehicl();
+        }
     }
     /// <summary>
     /// aplly effect to the camera when you are wall runing or sliding 
@@ -285,10 +297,18 @@ public class TitanfallMovement : MonoBehaviour
 
         //checks to see if you are still on the ground in the game
         checkGround();
+        //check the player is next to the car
+        checkVehicl();
+
         // change camera based on the state
         CameraEffect();
+
+
         speedText.text ="speed: " + move.magnitude.ToString("n2");
     }
+
+    
+
     private void FixedUpdate()
     {
         
@@ -438,6 +458,13 @@ public class TitanfallMovement : MonoBehaviour
         }
         
     }
+    /// <summary>
+    /// check to see if you are next to a Vehicle 
+    /// </summary>
+    private void checkVehicl()
+    {
+
+    }
 
     /// <summary>
     /// some constraints to wall running
@@ -557,6 +584,11 @@ public class TitanfallMovement : MonoBehaviour
         wallJumpTimer = maxWallJumpTimer;
         
     }
+    void EnterVehicl() 
+    {
+        
+    }
+
     private void OnDrawGizmos()
     {
         
@@ -575,6 +607,11 @@ public class TitanfallMovement : MonoBehaviour
         {
             transform.parent = null;
         }
+        if (hit.controller.tag == "Vehicl") 
+        {
+
+        }
     }
+
     
 }
