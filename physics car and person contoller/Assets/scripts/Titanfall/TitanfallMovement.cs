@@ -11,12 +11,16 @@ public class TitanfallMovement : MonoBehaviour
     /// the charater controller that this is based off of
     /// </summary>
     CharacterController controller;
+    RacingController raingController;
+
     [Header("ground check")]
     public Transform groundCheck;
 
     public LayerMask groundMask;
 
     public LayerMask wallMask;
+
+    public LayerMask VehicleMask;
     [ReadOnly]
     public Vector3 move;
     Vector3 input;
@@ -24,7 +28,9 @@ public class TitanfallMovement : MonoBehaviour
     Vector3 forwardDirection;
 
     static TitanfallMovement instance;
-    
+    /// <summary>
+    /// the debug part of the menu to make sure you can see what they are doing
+    /// </summary>
     [Header("Debug Menu")]
     [ReadOnly]
     public int jumpCharges;
@@ -48,8 +54,14 @@ public class TitanfallMovement : MonoBehaviour
     [SerializeField]bool canClimb;
     [ReadOnly]
     [SerializeField]bool hasClimbed;
+    [ReadOnly]
+    [SerializeField]bool nextToVehicle;
 
+    private GameObject human = null;
 
+    /// <summary>
+    /// the character movment
+    /// </summary>
     [Header("speed values")]
     public float runSpeed;
 
@@ -69,11 +81,10 @@ public class TitanfallMovement : MonoBehaviour
 
     public float wallSpeedDecrease;
 
-    
-
     float gravity;
 
     [SerializeField] TMP_Text speedText;
+
     [Header("game stats")]
     public GameObject panel;
 
@@ -101,10 +112,7 @@ public class TitanfallMovement : MonoBehaviour
 
     bool onRightWall;
 
-    bool nextToVehicl;
-
-    RaycastHit vehiclInRange;
-
+    
     RaycastHit leftWallHit;
 
     RaycastHit rightWallHit;
@@ -114,9 +122,6 @@ public class TitanfallMovement : MonoBehaviour
     Vector3 lastWallNormal;
 
     
-
-    
-
     RaycastHit wallHit;
 
     float climbTimber;
@@ -141,10 +146,14 @@ public class TitanfallMovement : MonoBehaviour
 
     public float tilt;
 
+    public Camera CarCamera;
     
     // Start is called before the first frame update
     void Start()
     {
+        raingController = FindObjectOfType<RacingController>();
+        //CarCamera = raingController.GetComponentInChildren<Camera>();
+        human = gameObject;
         controller = GetComponent<CharacterController>();
         startHeight = transform.localScale.y;
         jumpCharges = 2;
@@ -201,9 +210,9 @@ public class TitanfallMovement : MonoBehaviour
         {
             isSprinting = false;
         }
-        if (Input.GetKeyDown(KeyCode.E)) 
+        if (Input.GetKeyDown(KeyCode.E) && nextToVehicle) 
         {
-            EnterVehicl();
+            EnterVehicle();
         }
     }
     /// <summary>
@@ -298,7 +307,7 @@ public class TitanfallMovement : MonoBehaviour
         //checks to see if you are still on the ground in the game
         checkGround();
         //check the player is next to the car
-        checkVehicl();
+        checkVehicle();
 
         // change camera based on the state
         CameraEffect();
@@ -439,7 +448,7 @@ public class TitanfallMovement : MonoBehaviour
         }
     }
     /// <summary>
-    /// doesnt get called
+    /// lets you climb the wall
     /// </summary>
     void CheckClimbing() 
     {
@@ -461,9 +470,13 @@ public class TitanfallMovement : MonoBehaviour
     /// <summary>
     /// check to see if you are next to a Vehicle 
     /// </summary>
-    private void checkVehicl()
+    private void checkVehicle()
     {
-        nextToVehicl = Physics.Raycast(transform.position, transform.forward, out vehiclInRange, 0.7f, wallMask);
+        nextToVehicle = Physics.CheckSphere(transform.position, 1f, VehicleMask);
+        if (nextToVehicle)
+        {
+            print("you are next to a car");
+        }
     }
 
     /// <summary>
@@ -584,9 +597,15 @@ public class TitanfallMovement : MonoBehaviour
         wallJumpTimer = maxWallJumpTimer;
         
     }
-    void EnterVehicl() 
+    public void EnterVehicle() 
     {
-        
+        print("entering car");
+        raingController.enabled = true;
+
+        CarCamera.enabled = true;
+
+        gameObject.SetActive(false);
+
     }
 
     private void OnDrawGizmos()
@@ -595,7 +614,9 @@ public class TitanfallMovement : MonoBehaviour
         Gizmos.color = Color.yellow;
         Gizmos.DrawSphere(groundCheck.position, 0.2f);
         Gizmos.color = Color.cyan;
-        Gizmos.DrawSphere(transform.position, 0.7f);
+        //Gizmos.DrawSphere(transform.position, 0.7f);
+
+        Gizmos.DrawSphere(transform.position, 1f);
     }
     void OnControllerColliderHit(ControllerColliderHit hit)
     {

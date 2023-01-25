@@ -1,5 +1,88 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &1785509064
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1785509065}
+  - component: {fileID: 1785509067}
+  - component: {fileID: 1785509066}
+  m_Layer: 8
+  m_Name: CarCamera
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1785509065
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1785509064}
+  m_LocalRotation: {x: 0.07184564, y: 0, z: 0, w: 0.9974158}
+  m_LocalPosition: {x: 0, y: 1.26, z: -3.97}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 4893793585455004}
+  m_RootOrder: 5
+  m_LocalEulerAnglesHint: {x: 8.24, y: 0, z: 0}
+--- !u!20 &1785509067
+Camera:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1785509064}
+  m_Enabled: 1
+  serializedVersion: 2
+  m_ClearFlags: 1
+  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_projectionMatrixMode: 1
+  m_GateFitMode: 2
+  m_FOVAxisMode: 0
+  m_SensorSize: {x: 36, y: 24}
+  m_LensShift: {x: 0, y: 0}
+  m_FocalLength: 50
+  m_NormalizedViewPortRect:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 1
+    height: 1
+  near clip plane: 0.3
+  far clip plane: 1000
+  field of view: 60
+  orthographic: 0
+  orthographic size: 5
+  m_Depth: 0
+  m_CullingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_RenderingPath: -1
+  m_TargetTexture: {fileID: 0}
+  m_TargetDisplay: 0
+  m_TargetEye: 3
+  m_HDR: 1
+  m_AllowMSAA: 1
+  m_AllowDynamicResolution: 0
+  m_ForceIntoRT: 0
+  m_OcclusionCulling: 1
+  m_StereoConvergence: 10
+  m_StereoSeparation: 0.022
+--- !u!81 &1785509066
+AudioListener:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1785509064}
+  m_Enabled: 1
 --- !u!1 &1009707307199082
 GameObject:
   m_ObjectHideFlags: 0
@@ -10,7 +93,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4964224686296568}
   - component: {fileID: 146117123884337712}
-  m_Layer: 9
+  m_Layer: 8
   m_Name: prefab_wheel_rear_left
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -73,7 +156,7 @@ GameObject:
   - component: {fileID: 4092288135369944}
   - component: {fileID: 33826718080043858}
   - component: {fileID: 23493537210055018}
-  m_Layer: 9
+  m_Layer: 8
   m_Name: car_wheel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -253,7 +336,8 @@ GameObject:
   - component: {fileID: 4893793585455004}
   - component: {fileID: 54413102997315804}
   - component: {fileID: 65551058950704148}
-  m_Layer: 0
+  - component: {fileID: 1596583462}
+  m_Layer: 8
   m_Name: Car
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -276,6 +360,7 @@ Transform:
   - {fileID: 4623947544088790}
   - {fileID: 4297778290386550}
   - {fileID: 4964224686296568}
+  - {fileID: 1785509065}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -308,6 +393,47 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 0.47320724, z: 1.1832556}
   m_Center: {x: 0, y: -0.14856803, z: -0.18}
+--- !u!114 &1596583462
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1465699274065056}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7e0ec8e6e115ee340b348179af08dcde, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  VerticalInput: 10
+  HorizontalInput: 10
+  axles:
+  - leftWheel: {fileID: 146158935166265002}
+    rightWheel: {fileID: 146675311010191164}
+    isMotor: 0
+    isSteering: 0
+  maxMotorTorque: 10
+  maxSpeed: 10
+  motorCurve:
+    serializedVersion: 2
+    m_Curve: []
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  normalDamping: 0
+  brakeDamping: 0
+  brakeThreshold: 0
+  parkingThreshold: 0
+  maxSteeringAngle: 0
+  minSteeringAngle: 0
+  animationCurve:
+    serializedVersion: 2
+    m_Curve: []
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  steeringWheelSpeed: 0
+  antiRollStrength: 0
 --- !u!1 &1671192139831406
 GameObject:
   m_ObjectHideFlags: 0
@@ -318,7 +444,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4823739068970800}
   - component: {fileID: 146158935166265002}
-  m_Layer: 9
+  m_Layer: 8
   m_Name: prefab_wheel_front_left
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -380,7 +506,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4297778290386550}
   - component: {fileID: 146255619480180394}
-  m_Layer: 9
+  m_Layer: 8
   m_Name: prefab_wheel_rear_right
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -443,7 +569,7 @@ GameObject:
   - component: {fileID: 4530431460888598}
   - component: {fileID: 33547164497129108}
   - component: {fileID: 23579920842754502}
-  m_Layer: 9
+  m_Layer: 8
   m_Name: car_wheel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -525,7 +651,7 @@ GameObject:
   - component: {fileID: 4557117381040226}
   - component: {fileID: 33554156950724700}
   - component: {fileID: 23453180648532306}
-  m_Layer: 9
+  m_Layer: 8
   m_Name: car_wheel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -607,7 +733,7 @@ GameObject:
   - component: {fileID: 4735496179407322}
   - component: {fileID: 33728498963310344}
   - component: {fileID: 23808558439443974}
-  m_Layer: 9
+  m_Layer: 8
   m_Name: car_wheel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -688,7 +814,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4623947544088790}
   - component: {fileID: 146675311010191164}
-  m_Layer: 9
+  m_Layer: 8
   m_Name: prefab_wheel_front_right
   m_TagString: Untagged
   m_Icon: {fileID: 0}
